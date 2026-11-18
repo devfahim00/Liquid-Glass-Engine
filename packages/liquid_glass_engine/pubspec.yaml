@@ -1,6 +1,6 @@
 name: liquid_glass_engine
 description: Physically exact liquid-glass refraction for Flutter - exact Snell optics on the GPU, a drop-in widget, zero engine-code changes to integrate.
-version: 0.1.0
+version: 0.1.1
 publish_to: none
 
 environment:

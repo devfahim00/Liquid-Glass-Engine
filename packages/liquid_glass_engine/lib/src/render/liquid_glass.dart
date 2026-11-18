@@ -253,10 +253,13 @@ class _LiquidGlassState extends State<LiquidGlass> {
         return ClipRRect(
           borderRadius: BorderRadius.circular(radius),
           child: BackdropFilter(
-            filter: ui.ImageFilter.shader(
-              shader,
-              filterQuality: ui.FilterQuality.medium,
-            ),
+            // No `filterQuality` here on purpose: that named parameter only
+            // exists on Flutter 3.50+ while the package declares
+            // `flutter: ">=3.27.0"`, and the AOT compiler rejects unknown
+            // named parameters on older toolchains. The engine default
+            // sampling quality of the backdrop fetch is what the optics
+            // was validated against anyway.
+            filter: ui.ImageFilter.shader(shader),
             child: SizedBox.fromSize(size: size, child: widget.child),
           ),
         );

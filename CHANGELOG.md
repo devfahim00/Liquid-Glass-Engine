@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.1.1 - 2026-11-18
+
+### liquid_glass_engine
+
+- **Compatibility fix**: dropped the `filterQuality` named argument from
+  the `ui.ImageFilter.shader` construction in `LiquidGlass`. That parameter
+  only exists on Flutter 3.50+, while the package declares
+  `flutter: ">=3.27.0"`; the AOT compiler on older toolchains (e.g. 3.47.x,
+  which many apps pin while waiting on the Gradle 9 transition) rejects the
+  build with "No named parameter with the name 'filterQuality'". The engine
+  default sampling quality is used instead - identical optics.
+- CI: added an older-stable (3.44.9) analyze+test job so version-only APIs
+  fail before release, not in consumer apps.
+
 ## 0.1.0 - 2026-11-18
 
 Initial release: a faithful Flutter port of the QuickLiquid optics

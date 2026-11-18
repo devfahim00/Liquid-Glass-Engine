@@ -41,6 +41,28 @@ jobs:
       - run: flutter analyze --fatal-infos
       - run: flutter test
 
+  # Compatibility canary: the package declares `flutter: ">=3.27.0"`, so
+  # it must analyze and test against an older stable too - version-only
+  # APIs (e.g. the 3.50 `ImageFilter.shader(filterQuality:)`) fail here
+  # instead of failing consumer apps' AOT builds. 3.44.9 is the oldest
+  # stable still served by the archive at the pinned range.
+  engine-compat:
+    name: Engine (Flutter 3.44.9 canary) - analyze + test
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: packages/liquid_glass_engine
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: 3.44.9
+          channel: stable
+          cache: true
+      - run: flutter pub get
+      - run: flutter analyze --fatal-infos
+      - run: flutter test
+
   example:
     name: Example app - analyze
     runs-on: ubuntu-latest
