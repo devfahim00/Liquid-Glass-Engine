@@ -1,0 +1,57 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  core:
+    name: Core (pure Dart) - analyze + test + cross-check
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: packages/liquid_glass_core
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dart-lang/setup-dart@v1
+        with:
+          sdk: stable
+      - run: dart pub get
+      - run: dart analyze --fatal-infos
+      - run: dart test
+      - name: Dump optics profile and cross-check against the independent implementation
+        run: |
+          dart run tool/dump_profile.dart
+          python3 ../../scripts/crosscheck_optics.py
+
+  engine:
+    name: Engine (Flutter) - analyze + test
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: packages/liquid_glass_engine
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - run: flutter pub get
+      - run: flutter analyze --fatal-infos
+      - run: flutter test
+
+  example:
+    name: Example app - analyze
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: packages/liquid_glass_engine/example
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - run: flutter pub get
+      - run: flutter analyze --fatal-infos
